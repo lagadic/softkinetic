@@ -472,9 +472,14 @@ void onNewDepthSample(DepthNode node, DepthNode::NewSampleReceivedData data)
     }
 
     // Convert softkinetic vertices into a kinect-like coordinates pointcloud
-    current_cloud->points[count].x =   data.verticesFloatingPoint[count].z;
-    current_cloud->points[count].y = - data.verticesFloatingPoint[count].x;
-    current_cloud->points[count].z =   data.verticesFloatingPoint[count].y;
+    //current_cloud->points[count].x =   data.verticesFloatingPoint[count].z;
+    //current_cloud->points[count].y = - data.verticesFloatingPoint[count].x;
+    //current_cloud->points[count].z =   data.verticesFloatingPoint[count].y;
+
+    current_cloud->points[count].x =   data.verticesFloatingPoint[count].x;
+    current_cloud->points[count].y =  -data.verticesFloatingPoint[count].y;
+    current_cloud->points[count].z =   data.verticesFloatingPoint[count].z;
+
 
     // Get mapping between depth map and color map, assuming we have a RGB image
     if (img_rgb.data.size() == 0)
@@ -973,11 +978,11 @@ int main(int argc, char* argv[])
 
   // Initialize publishers
   pub_cloud = nh.advertise<sensor_msgs::PointCloud2>("depth/points", 1);
-  pub_rgb = it.advertise("rgb/image_color", 1);
-  pub_mono = it.advertise("rgb/image_mono", 1);
-  pub_depth = it.advertise("depth/image_raw", 1);
-  pub_depth_info = nh.advertise<sensor_msgs::CameraInfo>("depth/camera_info", 1);
-  pub_rgb_info = nh.advertise<sensor_msgs::CameraInfo>("rgb/camera_info", 1);
+  pub_rgb = it.advertise("/camera/rgb/image_color", 1);
+  pub_mono = it.advertise("/camera/rgb/image_mono", 1);
+  pub_depth = it.advertise("/camera/depth_registered/image_raw", 1);
+  pub_depth_info = nh.advertise<sensor_msgs::CameraInfo>("/camera/depth_registered/camera_info", 1);
+  pub_rgb_info = nh.advertise<sensor_msgs::CameraInfo>("/camera/rgb/camera_info", 1);
 
   std::string calibration_file;
   if (nh.getParam("rgb_calibration_file", calibration_file))
